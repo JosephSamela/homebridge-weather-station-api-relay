@@ -6,7 +6,7 @@ from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = "<api_token>"
+token = "<insert token>"
 org = "samela.io"
 bucket = "weatherstation"
 
@@ -30,9 +30,13 @@ def index():
 
 @app.route('/data')
 def data():
+    
+    t = getLastValue('temperature_F')
+    t_C = (t-32)*(5.0/9.0)
+
     return jsonify(
         {
-            'temperature': getLastValue('temperature_F'),
+            'temperature': t_C,
             'humidity': getLastValue('humidity'),
             'wind_speed': getLastValue('wind_avg_km_h'),
             'wind_dir_deg': getLastValue('wind_dir_deg'),
@@ -40,6 +44,6 @@ def data():
         }
     )
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
+
